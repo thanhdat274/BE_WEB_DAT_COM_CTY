@@ -1,11 +1,22 @@
 const express = require("express");
+const cors = require('cors');
+const mongoose = require('mongoose');
+
+const home = require("./src/routers/home");
+
+require('dotenv').config();
+const URI = process.env.MONGODB_URL;
+// Middlewares
 const app = express();
-const PORT = 3000;
+app.use(cors());
+app.use(express.json());
 
-app.get("/", (req, res) => {
-  res.send("Hello, Node.js Server!");
-});
+// Routes
+app.use("/", home);
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+mongoose.connect(URI)
+  .then(() => console.log("✅ Kết nối Database MongoDB thành công!"))
+  .catch(err => console.log("❌ Kết nối với Database MongoDB không thành công", err));
+// connection
+const port = process.env.PORT || 9001;
+app.listen(port, () => console.log(`🚀 Server ready at http://localhost:${port}`));
